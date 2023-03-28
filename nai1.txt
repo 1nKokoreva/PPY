@@ -1,0 +1,328 @@
+import javax.swing.*;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+    // 4.7,3.2,1.6,0.2   ,Iris-setosa
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Wprowadz liczbe najblizszych sasiadow, \n" +
+                           "ktorych program powinnen wrocic: ");
+        int k = scanner.nextInt();
+
+        ReadClasses r1 = new ReadClasses("train.txt", "test.txt");
+        List<ClassWrapper> r = r1.getClassWrapperTest();
+        KnnAlgorytm knn = new KnnAlgorytm(k);
+        knn.nazwaTestPoint();
+        // test -> wybireamy punkt testowy: 4.7,3.2,1.6,0.2,Iris-setosa
+        // nastepnie pobieramy wszystkie wiersze z pliku train.txt
+        // i dla kadego wiersza z pliku treningowego obliczamy odlegosc pomiedzy punktem treningowym a naszym punktem z pliku testowego
+        // po obliczeniu wszystkich odlegoci pomidzy naszym punktem testowym a wszystkimi wierszami z pliku train.txt
+        // sortujemy wiersze i wybieramy K pierwszych wierszy z posortowanej listy
+        /*
+        K=3
+        to jest K pierwszych wierszy z train.txt z posortowanej listy
+            5.2,3.5,1.5,0.2,Iris-setosa
+            6.0,3.0,4.8,1.8,Iris-virginica
+            6.7,3.3,5.7,2.1,Iris-virginica
+
+            predicted = Iris-virginica
+         */
+
+    }
+}
+import javax.sound.sampled.Line;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ReadClasses {
+
+    private String trainPath;
+    private String testPath;
+
+    public ReadClasses(String trainPath, String testPath) {
+        this.trainPath = trainPath;
+        this.testPath = testPath;
+    }
+
+    /*
+        4.7,3.2,1.6,0.2,Iris-setosa => ClassWrapper(nazwaKalsy: 'Iris-setosa', vector: [4.7,3.2,1.6,0.2])
+        6.3,2.7,4.9,1.8,Iris-virginica
+        6.4,3.2,5.3,2.3,Iris-virginica
+        7.7,2.8,6.7,2.0,Iris-virginica
+         */
+
+    private List<ClassWrapper> zwrotClassWrapper(String path) {
+        List<String> l = readLines(path);
+        List<ClassWrapper> listWrapper = new ArrayList<>();
+        for (int i = 0; i < l.size(); i++) {
+            String x = l.get(i);
+            ClassWrapper wrapper = ClassWrapper.createFromString(x);
+            listWrapper.add(wrapper);
+        }
+        return listWrapper;
+    }
+
+    public List<ClassWrapper> getClassWrapperTest() {
+        return zwrotClassWrapper(testPath);
+    }
+
+    public List<ClassWrapper> getClassWrapperTrain() {
+        return zwrotClassWrapper(trainPath);
+    }
+
+    public List<String> readLines(String path) {
+        List<String> newLista = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            String line = null;
+            while((line = reader.readLine()) != null){
+                newLista.add(line);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newLista;
+    }
+    /*
+    lista_class_wrappers
+    for linia: linie{
+        ClassWrapper wrapper = ClassWrapper.createFromString(linie);
+        lista_class_wrappers.add(wrapper);
+    }
+     */
+
+}
+import java.util.Arrays;
+
+// w ClassWrapper przechowujemy pojedynczy rekord z pliku testowego
+// mamy dwa pola: className i vector
+public class ClassWrapper {
+    private String className;
+    private double[] vector;
+
+    private double lenght;
+
+    public ClassWrapper(String className, double[] vector) {
+        this.className = className;
+        this.vector = vector;
+    }
+
+    // 7.7,2.8,6.7,2.0, Iris-virginica
+    // ponizsza funkcja zmapuje takiego stringa na obiekt klasy ClassWrapper
+    // metoda jest statyczna dlatego ze sluzy do tworzenia obiektow i dopoki nie zostanie wywolana, zaden obiekt nie istnieje
+
+    public static ClassWrapper createFromString(String fileLine){
+        String[] parts = fileLine.split(",");
+
+        // pierwsze cztery znaki w stringu reprezentuja wektor
+        int vectorParts = 4;
+        double[] vector = new double[vectorParts];
+        for (int i = 0; i < vectorParts; i++) {
+            vector[i] = Double.parseDouble(parts[i]);
+        }
+        // nazwa naszej klasy znajduje sie
+        // na ostatnim miejscu wiec pobieramy stringa
+        String className = parts[parts.length - 1];
+        return new ClassWrapper(className, vector);
+    }
+
+    public static double odlegloscDwoch(ClassWrapper c1, ClassWrapper c2 ){
+        double[] vector1 = c1.getVector();
+        double[] vector2 = c2.getVector();
+        double result = 0;
+        if (vector1.length == vector2.length){
+            for (int i = 0; i < vector1.length; i++) {
+                result += Math.pow((vector1[i] - vector2[i]), 2);
+            }
+        }
+
+        return result;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "ClassWrapper{" +
+                "className='" + className + '\'' +
+                ", vector=" + Arrays.toString(vector) + '\n' + "len: " + lenght +
+                '}';
+    }
+
+    public double getLenght() {
+        return lenght;
+    }
+
+    public void setVector(double[] vector) {
+        this.vector = vector;
+    }
+
+    public void setLenght(double lenght) {
+        this.lenght = lenght;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public double[] getVector() {
+        return vector;
+    }
+}
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class KnnAlgorytm {
+    // predictClass("5.5,2.5,4.0,1.3", [7.7,2.6,6.9,2.3,Iris-virginica, length: 3
+    //5.5,4.2,1.4,0.2,Iris-setosa
+    //4.4,2.9,1.4,0.2,Iris-setosa
+    //7.9,3.8,6.4,2.0,Iris-virginica
+    //5.1,3.3,1.7,0.5,Iris-setosa
+    //4.6,3.6,1.0,0.2,Iris-setosa
+    //5.0,2.0,3.5,1.0,Iris-versicolor
+    //5.5,2.4,3.8,1.1,Iris-versicolor])
+    int k;
+    /*
+    sytuacja gdy k jest polem w klasie:
+        KnnAlgorytm knn = new KnnAlgorytm(4)
+        List<ClassWrapper> testPoints = get_test_points();
+        String klasa = predictClass(testPoint, wiersze_z_pliku_train_txt);
+        for(ClassWrapper testPoints: testPoints){
+            predictClass(testPoint, wiersze_z_pliku_train_txt, testPoint.getK());
+
+        KnnAlgorytm.predictClass(testPoints, classWrappersTrain);
+     */
+
+    public KnnAlgorytm(int k) {
+        this.k = k;
+    }
+
+    public String predictClass(ClassWrapper testPoint, List<ClassWrapper> classWrappersTrain) {
+
+        for (int i = 0; i < classWrappersTrain.size(); i++) {
+            ClassWrapper trainRecord = classWrappersTrain.get(i); //liniejka w train
+            double lenght = ClassWrapper.odlegloscDwoch(testPoint, trainRecord);
+            trainRecord.setLenght(lenght);
+        }
+        // zwraca 1 kiedy o1 > o2
+        // zwraca 0 kiedy o1 == o2
+        // zwraca -1 kiedy o1 < o2
+        /*
+            7.7,2.6,6.9,2.3,Iris-virginica
+            5.5,4.2,1.4,0.2,Iris-setosa
+            4.4,2.9,1.4,0.2,Iris-setosa
+            7.9,3.8,6.4,2.0,Iris-virginica
+            5.1,3.3,1.7,0.5,Iris-setosa
+            4.6,3.6,1.0,0.2,Iris-setosa
+         */
+        Collections.sort(classWrappersTrain, new Comparator<ClassWrapper>() {
+
+            @Override
+            public int compare(ClassWrapper o1, ClassWrapper o2) {
+                double x = o1.getLenght() - o2.getLenght();
+                if (x == 0) {
+                    return 0;
+                } else if (o1.getLenght() > o2.getLenght()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+        List<ClassWrapper> kElements = classWrappersTrain.subList(0, k); //zwraca k pierwszych elementow z listy classWraper
+        // ["jeden", "jeden", "dwa"]
+        // Map<String, Integer> map = new HashMap<>();
+        // if(mapa zawiera klucz "jeden" )
+        // jesli tak map.set("jeden",map.get("jeden") + 1)
+        // jesli nie bylo klucz "jeden" map.set("jeden", 1)
+        // [{"jeden": 2}, {"dwa": 1}]
+        LinkedHashMap<String, Integer> classCountMap = new LinkedHashMap<>();
+
+        for (ClassWrapper w : kElements) {
+            Integer classCount = classCountMap.get(w.getClassName());
+            if (classCount != null) {
+                classCount += 1;
+                classCountMap.put(w.getClassName(), classCount);
+            } else {
+                classCountMap.put(w.getClassName(), 1);
+            }
+
+        }
+        // entrySet() zwraca nam Set<Map.Entry<String, Integer>> jest to zbiór par klucz wartosc
+        String className = classCountMap.entrySet()
+                //metoda stream tworzy nam obiket strumienia
+                .stream()
+                // metoda sort ktora odpowiada za sorotwanie elementow w strumieniu
+                // ale musi wiedziec na jakiej podstawie ma sortowac pary wartosci {klucz:wartosc}
+                // my informujemy funkcj sorted poprzez przekazanie jej lambdy(Map.Entry.comparingByValue())
+                // i dzieki temu informujemy ze sortujemy nasze elementy bazujac na wartoscach
+                .sorted(Map.Entry.comparingByValue())
+                .max(Map.Entry.comparingByValue()) // max szuka najwiekszej wartosci w strumieniu ale musi wiedziec na jakiej podsatwie okreslamy najwieksza wartosc gdy mamy elementy {key:value}
+                .map(Map.Entry::getKey) // gdy znajdziemy najwieksza wartosc to pobiermy jej etykieta ktora jest kluczem
+                .orElse(""); // jesli nie zanleziono niczego to zwracamy pusty string
+        /*
+        "length" to odlegosc pomidzy naszym test pointem a wierszem
+        Po posortowaniu wierszy bazujc na ich odlegoci od naszego test pointa otrzymalimy:
+            7.7,2.6,6.9,2.3,Iris-virginica length: 3
+            7.9,3.8,6.4,2.0,Iris-virginica length: 4
+            5.1,3.3,1.7,0.5,Iris-setosa length: 5
+            5.5,4.2,1.4,0.2,Iris-setosa length: 6
+            4.4,2.9,1.4,0.2,Iris-setosa length: 7
+            4.6,3.6,1.0,0.2,Iris-setosa length: 9
+            nastepnie wybieramy 'K' pierwszych (czyli inaczej najbliszych) wierszy do test pointa
+
+            zakadajac ze K = 3
+            pobierzemy sobie te wiersze:
+            7.7,2.6,6.9,2.3,Iris-virginica length: 3
+            7.9,3.8,6.4,2.0,Iris-virginica length: 4
+            5.1,3.3,1.7,0.5,Iris-setosa length: 5
+
+            a nastepnie sprawdzamy ktra etykieta wystpuje najczesciej
+            Iris-setosa => wystpuje 1 raz
+            Iris-virginica => wystepuje 2 razy
+            wic przypuszczamy ze szukana etykieta dla naszego test pointa to 'Iris-virginica'
+         */
+
+        return className;
+    }
+
+    public void nazwaTestPoint() {
+        ReadClasses readClasses = new ReadClasses("train.txt", "test.txt");
+
+        List<ClassWrapper> testPoints = readClasses.getClassWrapperTest();
+        List<ClassWrapper> trainPoints = readClasses.getClassWrapperTrain();
+        double testPointsCount = testPoints.size();
+        double correctCount = 0;
+        for (int i = 0; i < testPoints.size(); i++) { //zwraca etykiety dla dannego testpointa
+            String predictedClass = predictClass(testPoints.get(i), trainPoints);
+            if (predictedClass.equals(testPoints.get(i).getClassName())){
+                correctCount += 1;
+            }
+            ClassWrapper testPoint = testPoints.get(i);
+            System.out.println(Arrays.toString(testPoint.getVector()) + " " + testPoint.getClassName() + " predicted: " + predictedClass);
+            /*
+            1.2, 2.2, 3.1, 4.1, iris-virginica  predicted: iris-virginica
+1.2, 0.2, 3.1, 0.0, iris-setosa     predicted: iris-virginica
+0.3, 0.1, 1.1, 2.0, iris-setosa     predicted: iris-setosa
+0.3, 0.1, 1.3, 2.1, iris-setosa     predicted: iris-setosa
+
+Dokładność: 75.0 %
+             */
+        }
+        System.out.println("Dokladnosc: "+ (int)((correctCount/testPointsCount) * 100 )+ "%");
+
+    }
+
+}
+
