@@ -1,2 +1,0 @@
-# PPY
-python basics
