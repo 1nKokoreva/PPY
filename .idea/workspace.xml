@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa7b41a2-0f15-4946-b905-00ce99504757" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/task9/generator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/task9/small.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/projekt/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/task7/Gui2.py" beforeDir="false" afterPath="$PROJECT_DIR$/task7/Gui2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,10 +51,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Users\user\Desktop\ppy7\PPY\projekt" />
       <recent name="D:\Users\user\Desktop\ppy7\PPY\task7" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.generator">
+  <component name="RunManager" selected="Python.main (1)">
     <configuration name="Gui" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="PPY" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -122,6 +122,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="PPY" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/projekt" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/projekt/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="PPY" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -168,6 +190,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main (1)" />
         <item itemvalue="Python.generator" />
         <item itemvalue="Python.student" />
         <item itemvalue="Python.Gui2" />
@@ -185,7 +208,8 @@
       <updated>1685435006937</updated>
       <workItem from="1685435008250" duration="21000" />
       <workItem from="1685436583244" duration="5383000" />
-      <workItem from="1687206305368" duration="3873000" />
+      <workItem from="1687206305368" duration="4259000" />
+      <workItem from="1687240613446" duration="5017000" />
     </task>
     <servers />
   </component>
@@ -200,11 +224,6 @@
           <line>8</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/task9/generator.py</url>
-          <line>42</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -213,5 +232,6 @@
     <SUITE FILE_PATH="coverage/PPY$student.coverage" NAME="student Coverage Results" MODIFIED="1687206487262" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/task7" />
     <SUITE FILE_PATH="coverage/PPY$Gui.coverage" NAME="Gui Coverage Results" MODIFIED="1685437117821" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/task7" />
     <SUITE FILE_PATH="coverage/PPY$generator.coverage" NAME="generator Coverage Results" MODIFIED="1687213077128" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/task9" />
+    <SUITE FILE_PATH="coverage/PPY$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1687245642885" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/projekt" />
   </component>
 </project>

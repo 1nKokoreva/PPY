@@ -29,7 +29,7 @@ treeview.heading("title", text="Tytuł")
 treeview.heading("author", text="Autor")
 treeview.heading("price", text="Cena")
 treeview.heading("category", text="Kategoria")
-# Wyświetlenie widżetu Treeview
+
 treeview.pack()
 
 
